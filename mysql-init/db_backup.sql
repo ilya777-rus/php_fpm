@@ -1,4 +1,3 @@
-Enter password: 
 -- MySQL dump 10.13  Distrib 9.0.1, for Linux (x86_64)
 --
 -- Host: localhost    Database: tages
