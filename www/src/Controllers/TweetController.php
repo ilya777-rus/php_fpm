@@ -68,7 +68,6 @@ class TweetController{
             $result = $this->tweet->create();
 
             if ($result['status']){
-                var_dump('OOOOOOOOOOOOOOOOOOOOOOOOOOO');
                 http_response_code(201);
                 echo json_encode($result, JSON_UNESCAPED_UNICODE);
             }else{

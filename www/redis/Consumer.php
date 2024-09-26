@@ -22,7 +22,7 @@ class Consumer{
     }
     public function run(){
         while(true){
-            // echo "ждем ....<br>";
+            echo "ждем ....<br>";
 
             $payload = $this->popFromQueue();
 

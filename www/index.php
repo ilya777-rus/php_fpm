@@ -14,47 +14,46 @@ $id = $params[2] ??  null ;
 
 $controller = new TweetController();
 $producer = new Producer('tweet_queue');
-if ($method==='GET') {
-    if ($type === 'tweets' ) {
 
-        if (isset($id)) {
-            $controller->getTweetById($id);
-        } else {
 
-            $controller->getAllTweets();
-        }
-    }elseif ($type==='categories'){
+switch([$method, $type, $id]){
+    case ['GET', 'categories', NULL]:
         $category = new CategoryController();
         $category->getAllcats();
-    }
-}elseif ($method==='POST') {
-    if ($type==='tweets'){
+        break;
 
+    case ['GET', 'tweets', NULL]:
+        $controller->getAllTweets();
+        break;
+
+    case ['GET', 'tweets', $id]:
+        $controller->getTweetById($id);
+        break;
+
+    case ['POST', 'tweets', NULL]:
         $data = json_decode(file_get_contents('php://input'), true);
-        
         $producer->send($data);
-   
         echo json_encode(['status' => true]);
+        break;
 
-    }
-}elseif ($method==="PATCH"){
-    if ($type === 'tweets' ) {
+    // case ['PATCH', 'tweets', $id]:
+    //     if (isset($id)) {
+    //         $controller->updateTweet($id);
+    //     } else {
+    //         http_response_code(400);
+    //         echo json_encode(["message"=>"Введите твит и его id!"]);
+    //     }
+    //     break;
 
-        if (isset($id)) {
+    case ['DELETE', 'tweets', $id]:
+        $controller->deleteTweet($id);
+        break;
 
-            $controller->updateTweet($id);
-        } else {
-            http_response_code(400);
-            echo json_encode(["message"=>"Введите твит и его id!"]);
-
-        }
-    }
-}elseif($method==="DELETE"){
-
-    if ($type==="tweets"){
-        if (isset($id)){
-            $controller->deleteTweet($id);
-        }
-    }
+    default:
+        http_response_code(400); 
+        echo json_encode([
+            'status' => false,
+            'message' => 'Некорректный запрос: неправильный метод или тип'
+        ]);
+        break;
 }
-
